@@ -1,0 +1,105 @@
+---
+title: "casestudy"
+author: "Daniel M. Turner"
+date: "December 17, 2018"
+output: html_document
+---
+
+0.
+```{r}
+##load data
+beer <- read.csv("C:\\Users\\DMT\\Documents\\masters\\semester1\\dds402\\CaseStudy_2_2_2_2_2_2\\Beers.csv", header = TRUE, sep = ",")
+
+brewery <- read.csv("C:\\Users\\DMT\\Documents\\masters\\semester1\\dds402\\CaseStudy_2_2_2_2_2_2\\Breweries.csv", header = TRUE, sep = ",")
+
+```
+
+
+1.	How many breweries are present in each state?
+```{r}
+##count by state
+
+brewsByState = summary(brewery$State)
+
+
+```
+
+2.	Merge beer data with the breweries data. Print the first 6 observations and the last six observations to check the merged file.
+```{r}
+##data merge and check.clean data?
+
+colnames(brewery)[colnames(brewery)=="Brew_ID"] <- "Brewery_id"
+brewNBeer <- merge(beer, brewery, by = "Brewery_id")
+head(brewNBeer)
+tail(brewNBeer)
+
+
+```
+
+3.	Report the number of NA's in each column.
+```{r}
+##after clean, only missing bitterness? beer types?
+colSums(is.na(brewNBeer))
+
+
+```
+
+4.	Compute the median alcohol content and international bitterness unit for each state. Plot a bar chart to compare.
+```{r}
+##find medians by state. Do twice? once counting NA and once not counting NA
+#alcy<-tapply(brewNBeer$ABV, INDEX=brewNBeer$State, FUN=median)
+#bitter<-tapply(brewNBeer$IBU, INDEX=brewNBeer$State, FUN=median)
+
+#remove na for data
+alcy<-tapply(brewNBeer$ABV[!is.na(brewNBeer$ABV)], INDEX=brewNBeer$State[!is.na(brewNBeer$ABV)], FUN=median)
+bitter<-tapply(brewNBeer$IBU[!is.na(brewNBeer$IBU)], INDEX=brewNBeer$State[!is.na(brewNBeer$IBU)], FUN=median)
+
+library(ggplot2)
+
+df_abv <- data.frame(state=names(alcy),abv = alcy)
+ggplot(data=df_abv, aes(x=state, y=abv)) +
+    geom_bar(stat="identity")+ coord_flip()+
+    geom_bar(stat="identity", color="blue", fill="green")+
+    geom_text(aes(label=abv), hjust=-2, size=2)+
+    theme_minimal()
+
+bitter[is.na(bitter)] <- 0
+df_ibu <- data.frame(state=names(bitter),ibu = bitter)
+ggplot(data=df_ibu, aes(x=state, y=ibu)) +
+    geom_bar(stat="identity")+ coord_flip()+
+    geom_bar(stat="identity", color="blue", fill="green")+
+    geom_text(aes(label=ibu), hjust=-2, size=2)+
+    theme_minimal()
+
+```
+
+5.	Which state has the maximum alcoholic (ABV) beer? Which state has the most bitter (IBU) beer?
+```{r}
+##find biggest numbers. NBD
+brewNBeer[which.max(brewNBeer$ABV),] #alcohol
+brewNBeer[which.max(brewNBeer$IBU),] #bitterness
+
+
+```
+
+6.	Summary statistics for the ABV variable.
+```{r}
+##summarize numbers. box plot?
+summary(brewNBeer$ABV)
+
+```
+
+7.	Is there an apparent relationship between the bitterness of the beer and its alcoholic content? Draw a scatter plot.
+```{r}
+##plot ibu vs abv. nbd
+plot(brewNBeer$ABV,brewNBeer$IBU)# ugly but a starting point
+
+
+```
+
+prep develop and present
+```{r}
+##1-7, describe results in common speak
+
+
+```
