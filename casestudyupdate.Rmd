@@ -63,7 +63,7 @@ ggplot(data=df_abv, aes(x=state, y=abv)) +
     geom_text(aes(label=abv), hjust=-2, size=2)+
     theme_minimal()
 
-bitter[is.na(bitter)] <- 0
+#bitter[is.na(bitter)] <- 0
 df_ibu <- data.frame(state=names(bitter),ibu = bitter)
 ggplot(data=df_ibu, aes(x=state, y=ibu)) +
     geom_bar(stat="identity")+ coord_flip()+
@@ -94,6 +94,10 @@ summary(brewNBeer$ABV)
 ##plot ibu vs abv. nbd
 plot(brewNBeer$ABV,brewNBeer$IBU)# ugly but a starting point
 
+t.test(brewNBeer$ABV, 
+       brewNBeer$IBU, 
+       paired=TRUE, 
+       conf.level=0.95)
 
 ```
 
